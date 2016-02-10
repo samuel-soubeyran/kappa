@@ -100,7 +100,7 @@ class Function(object):
         LOG.debug('_zip_lambda_dir: lambda_dir=%s', lambda_dir)
         LOG.debug('zipfile_name=%s', zipfile_name)
         relroot = os.path.abspath(lambda_dir)
-        with zipfile.ZipFile(zipfile_name, 'w',
+        with zipfile.ZipFile(zipfile_name, 'a',
                              compression=zipfile.ZIP_DEFLATED) as zf:
             for root, dirs, files in os.walk(lambda_dir):
                 zf.write(root, os.path.relpath(root, relroot))
@@ -114,15 +114,18 @@ class Function(object):
     def _zip_lambda_file(self, zipfile_name, lambda_file):
         LOG.debug('_zip_lambda_file: lambda_file=%s', lambda_file)
         LOG.debug('zipfile_name=%s', zipfile_name)
-        with zipfile.ZipFile(zipfile_name, 'w',
+        with zipfile.ZipFile(zipfile_name, 'a',
                              compression=zipfile.ZIP_DEFLATED) as zf:
             zf.write(lambda_file)
 
-    def zip_lambda_function(self, zipfile_name, lambda_fn):
-        if os.path.isdir(lambda_fn):
-            self._zip_lambda_dir(zipfile_name, lambda_fn)
-        else:
-            self._zip_lambda_file(zipfile_name, lambda_fn)
+    def zip_lambda_function(self, zipfile_name, paths):
+        with zipfile.ZipFile(zipfile_name,'w', compression=zipfile.ZIP_DEFLATED) as zf:
+            LOG.debug('zipfile_name=%s', zf.namelist())
+        for path in paths:
+            if os.path.isdir(path):
+                self._zip_lambda_dir(zipfile_name, path)
+            else:
+                self._zip_lambda_file(zipfile_name, path)
 
     def add_permissions(self):
         for permission in self.permissions:
