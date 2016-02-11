@@ -126,7 +126,7 @@ class Function(object):
                         try:
                             zf.getinfo(arcname)
                         except KeyError:
-                            zipfile.write(filepath, arcname)
+                            zf.write(filepath, arcname)
 
     def _zip_lambda_file(self, zipfile_name, lambda_file):
         LOG.debug('_zip_lambda_file: lambda_file=%s', lambda_file)
