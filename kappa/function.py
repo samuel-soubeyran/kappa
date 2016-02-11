@@ -67,7 +67,7 @@ class Function(object):
 
     @property
     def include(self):
-        return self._config['include'] or []
+        return self._config.get('include', list())
 
     @property
     def exclude(self):
@@ -93,6 +93,11 @@ class Function(object):
             except Exception:
                 LOG.debug('Unable to find ARN for function: %s', self.name)
         return self._arn
+
+    @property
+    def publish(self):
+        return self._config.get('publish', True)
+    
 
     @property
     def log(self):
@@ -172,7 +177,8 @@ class Function(object):
                     Handler=self.handler,
                     Description=self.description,
                     Timeout=self.timeout,
-                    MemorySize=self.memory_size)
+                    MemorySize=self.memory_size,
+                    Publish= self.publish)
                 LOG.debug(response)
             except Exception:
                 LOG.exception('Unable to upload zip file')
@@ -186,7 +192,8 @@ class Function(object):
                 zipdata = fp.read()
                 response = self._lambda_svc.update_function_code(
                     FunctionName=self.name,
-                    ZipFile=zipdata)
+                    ZipFile=zipdata,
+                    Publish= self.publish)
                 LOG.debug(response)
             except Exception:
                 LOG.exception('Unable to update zip file')
