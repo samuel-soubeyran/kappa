@@ -123,14 +123,20 @@ class Function(object):
                     if os.path.isfile(filepath):
                         arcname = os.path.join(
                             os.path.relpath(root, relroot), filename)
-                        zf.write(filepath, arcname)
+                        try:
+                            zf.getinfo(arcname)
+                        except KeyError:
+                            zipfile.write(filepath, arcname)
 
     def _zip_lambda_file(self, zipfile_name, lambda_file):
         LOG.debug('_zip_lambda_file: lambda_file=%s', lambda_file)
         LOG.debug('zipfile_name=%s', zipfile_name)
         with zipfile.ZipFile(zipfile_name, 'a',
                              compression=zipfile.ZIP_DEFLATED) as zf:
-            zf.write(lambda_file)
+            try:
+                zf.getinfo(lambda_file)
+            except KeyError:
+                zipfile.write(lambda_file)
 
     def zip_lambda_function(self, zipfile_name, paths):
         with zipfile.ZipFile(zipfile_name,'w', compression=zipfile.ZIP_DEFLATED) as zf:
