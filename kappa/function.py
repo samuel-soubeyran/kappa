@@ -118,7 +118,12 @@ class Function(object):
                              compression=zipfile.ZIP_DEFLATED) as zf:
             for root, dirs, files in os.walk(lambda_dir):
                 try:
-                    zf.getinfo(os.path.relpath(root, relroot) + '/')
+                    dir_path = os.path.relpath(root, relroot)
+                    dir_path = os.path.normpath(os.path.splitdrive(dir_path)[1])
+                    while dir_path[0] in (os.sep, os.altsep):
+                        dir_path = dir_path[1:]
+                    dir_path += '/'
+                    zf.getinfo(dir_path)
                 except KeyError:
                     zf.write(root, os.path.relpath(root, relroot))
                 for filename in files:
@@ -127,7 +132,11 @@ class Function(object):
                         arcname = os.path.join(
                             os.path.relpath(root, relroot), filename)
                         try:
-                            zf.getinfo(arcname + '/')
+                            dir_path = os.path.normpath(os.path.splitdrive(arcname)[1])
+                            while dir_path[0] in (os.sep, os.altsep):
+                                dir_path = dir_path[1:]
+                            dir_path += '/'
+                            zf.getinfo(dir_path + '/')
                         except KeyError:
                             zf.write(filepath, arcname)
 
