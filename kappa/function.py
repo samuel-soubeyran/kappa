@@ -136,7 +136,7 @@ class Function(object):
             try:
                 zf.getinfo(lambda_file)
             except KeyError:
-                zipfile.write(lambda_file)
+                zf.write(lambda_file)
 
     def zip_lambda_function(self, zipfile_name, paths):
         with zipfile.ZipFile(zipfile_name,'w', compression=zipfile.ZIP_DEFLATED) as zf:
