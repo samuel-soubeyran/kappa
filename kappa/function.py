@@ -66,6 +66,15 @@ class Function(object):
         return self._config['path']
 
     @property
+    def include(self):
+        return self._config['include'] or []
+
+    @property
+    def exclude(self):
+        return self._config['exclude']
+    
+
+    @property
     def test_data(self):
         return self._config['test_data']
 
@@ -109,6 +118,7 @@ class Function(object):
                     if os.path.isfile(filepath):
                         arcname = os.path.join(
                             os.path.relpath(root, relroot), filename)
+                        if 
                         zf.write(filepath, arcname)
 
     def _zip_lambda_file(self, zipfile_name, lambda_file):
@@ -148,7 +158,7 @@ class Function(object):
 
     def create(self):
         LOG.debug('creating %s', self.zipfile_name)
-        self.zip_lambda_function(self.zipfile_name, self.path)
+        self.zip_lambda_function(self.zipfile_name, self.include + [self.path])
         with open(self.zipfile_name, 'rb') as fp:
             exec_role = self._context.exec_role_arn
             LOG.debug('exec_role=%s', exec_role)
@@ -170,7 +180,7 @@ class Function(object):
 
     def update(self):
         LOG.debug('updating %s', self.zipfile_name)
-        self.zip_lambda_function(self.zipfile_name, self.path)
+        self.zip_lambda_function(self.zipfile_name, self.include + [self.path])
         with open(self.zipfile_name, 'rb') as fp:
             try:
                 zipdata = fp.read()
