@@ -123,7 +123,6 @@ class Function(object):
                     if os.path.isfile(filepath):
                         arcname = os.path.join(
                             os.path.relpath(root, relroot), filename)
-                        if 
                         zf.write(filepath, arcname)
 
     def _zip_lambda_file(self, zipfile_name, lambda_file):
