@@ -117,7 +117,10 @@ class Function(object):
         with zipfile.ZipFile(zipfile_name, 'a',
                              compression=zipfile.ZIP_DEFLATED) as zf:
             for root, dirs, files in os.walk(lambda_dir):
-                zf.write(root, os.path.relpath(root, relroot))
+                try:
+                    zf.getinfo(os.path.relpath(root, relroot))
+                except KeyError:
+                    zf.write(root, os.path.relpath(root, relroot))
                 for filename in files:
                     filepath = os.path.join(root, filename)
                     if os.path.isfile(filepath):
