@@ -132,11 +132,7 @@ class Function(object):
                         arcname = os.path.join(
                             os.path.relpath(root, relroot), filename)
                         try:
-                            dir_path = os.path.normpath(os.path.splitdrive(arcname)[1])
-                            while dir_path[0] in (os.sep, os.altsep):
-                                dir_path = dir_path[1:]
-                            dir_path += '/'
-                            zf.getinfo(dir_path + '/')
+                            zf.getinfo(arcname)
                         except KeyError:
                             zf.write(filepath, arcname)
 
