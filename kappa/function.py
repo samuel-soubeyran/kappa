@@ -125,7 +125,7 @@ class Function(object):
                     dir_path += '/'
                     zf.getinfo(dir_path)
                 except KeyError:
-                    zf.write(root, os.path.relpath(root, relroot))
+                    zf.write(root, dir_path)
                 for filename in files:
                     filepath = os.path.join(root, filename)
                     if os.path.isfile(filepath):
